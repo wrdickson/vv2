@@ -2,13 +2,20 @@
 import { userStore } from './stores/user.js'
 import api from './api/api.js'
 import MainMenu from './components/mainMenu.vue'
+import userMenu from './components/userMenu.vue'
+import localeSwitch from './components/localeSwitch.vue'
 export default {
   components: {
-    MainMenu
+    MainMenu, userMenu, localeSwitch
   },
   data () {
     return {
-      drawerVisible: false
+      drawerVisible: false,
+    }
+  },
+  computed: {
+    account: () => {
+      return userStore().account
     }
   },
   methods: {
@@ -42,7 +49,7 @@ export default {
       userStore().setAccountToGuest()
       userStore().setJwt('')
       //  navigate to login . . .
-       
+
     }
   }
 }
@@ -71,7 +78,8 @@ export default {
             <span class="hidden-md-and-up"><el-menu-item @click="showDrawer"><font-awesome-icon icon="fa-solid fa-bars" size="2x" /></el-menu-item></span>
             <el-menu-item class="navbarBrand" index="1">Trekbill.com</el-menu-item>
             <div class="flex-grow"/>
-            <el-menu-item index="2">Item 12</el-menu-item>
+            <userMenu :account="account"/>
+            <localeSwitch/>
           </el-menu>
       </el-header>
       <el-main>

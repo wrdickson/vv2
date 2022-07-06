@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-  <h1>Home</h1>
+  <h1>{{ $t('message.homePage') }}</h1>
 </template>
 
 <style>

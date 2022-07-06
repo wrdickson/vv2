@@ -1,18 +1,21 @@
 <template>
   <div>
     <div class="block">
-      <el-date-picker
-        v-model="selectedDate"
-        type="date"
-        placeholder="Pick a day"
-        :size="size"
-      />
+      <el-config-provider :locale="locale">
+        <el-date-picker
+          v-model="selectedDate"
+          type="date"
+          :placeholder="datepickerPlaceholder"
+          :size="size"
+        />
+      </el-config-provider>
     </div>
   </div>
 
 </template>
 
 <script>
+import { localeStore } from './../stores/locale.js'
 export default {
   name: 'singelDatePicker',
   emits: ['singleDatePicker:dateSelected'],
@@ -20,6 +23,14 @@ export default {
     return {
       selectedDate: null,
       size: 'default'
+    }
+  },
+  computed: {
+    datepickerPlaceholder () {
+      return this.$t('message.datepickerPlaceholder')
+    },
+    locale () {
+      return localeStore().selectedLocale
     }
   },
   watch: {

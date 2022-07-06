@@ -8,7 +8,7 @@ import 'element-plus/theme-chalk/display.css'
 import './my-style.css'
 import App from './App.vue'
 import router from  './router/index.js'
-
+import es from 'element-plus/lib/locale/lang/es'
 
 //  fontawesome icons
 
@@ -25,12 +25,32 @@ library.add(faBars)
 const messages = {
   en: {
     message: {
-      hello: 'Hello!'
+      datepickerPlaceholder: 'Pick a day',
+      hello: 'Hello!',
+      homePage: 'Home',
+      loggedInAs: 'Logged in as',
+      login: 'Login',
+      loginFailed: 'Login failed',
+      loginSucceeded: 'Login succeeded',
+      logoff: 'Logoff',
+      password: 'Password',
+      reservationView: 'Reservation View',
+      username: 'Username'
     }
   },
   es: {
     message: {
-      hello: 'Buenos dias!'
+      datepickerPlaceholder: 'Elighe una fecha',
+      hello: 'Buenos dias!',
+      homePage: 'Página principal',
+      loggedInAs: 'Iniciado sesión como',
+      login: 'Iniciar sesión',
+      loginFailed: 'Error de inicio de sesión',
+      loginSucceeded: 'Inicio de sesión correcto',
+      logoff: 'Cerrar Sesión',
+      password: 'Contraseña',
+      reservationView: 'Vista de Reservas',
+      username: 'Nombre de usario'
     }
   }
 };

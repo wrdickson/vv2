@@ -3,7 +3,12 @@ import { defineStore } from 'pinia'
 export const userStore = defineStore({
   id: 'user',
   state: () => ({
-    account: null,
+    account: {
+      id: '0',
+      username: 'Guest',
+      permission: '0',
+      roles: []
+    },
     jwt: null
   }),
   actions: {
@@ -22,7 +27,7 @@ export const userStore = defineStore({
     },
     setJwt ( jwt ) {
       this.jwt = jwt
-      localStorage.jwt = jwt
+      localStorage.setItem('jwt', jwt)
     }
   }
 })

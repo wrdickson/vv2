@@ -4,16 +4,16 @@
       <el-col :span="12">
         <el-card>
           <template #header>
-           <div class="card-header">Login</div>
+           <div class="card-header">{{ $t('message.login')}}</div>
           </template>
           <el-form id="login-form">
-            <el-form-item label="Username">
+            <el-form-item :label="$t('message.username')">
               <el-input
                 v-model="username1"
                 type="text"
               />
            </el-form-item>
-           <el-form-item label="Password">
+           <el-form-item :label="$t('message.password')">
               <el-input
                 v-model="password1"
                 type="password"
@@ -23,7 +23,7 @@
               <el-button
                 @click="loginCheck"
               >
-                Login
+                {{ $t('message.login') }}
               </el-button>
             </el-form-item>
           </el-form>
@@ -70,10 +70,12 @@ export default {
           userStore().setAccount(response.data.account)
           userStore().setJwt(response.data.jwt)
           ElMessage({
-            message: 'Login succeeded',
+            message: this.$t('message.loginSucceeded'),
             type: 'success',
             center: true
           })
+          //  navigate
+          this.$router.push('/')
         } else {
           //  show user the login has failed
           this.loginResponse = 'Login Failed'
@@ -81,7 +83,7 @@ export default {
           userStore().setAccountToGuest()
           userStore().setJwt('')
           ElMessage({
-            message: 'Login failed',
+            message: this.$t('message.loginFailed'),
             type: 'warning',
             center: true
          })

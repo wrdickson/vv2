@@ -2,12 +2,11 @@
   import c1 from './C1.vue'
   import resBlock from './resBlock.vue'
   import singleDatePicker from './singleDatePicker.vue'
-  import LocaleSwitch from './localeSwitch.vue'
   import { useCounterStore } from './../stores/counter.js'
   import dayjs from 'dayjs'
   import _ from 'lodash'
   export default {
-    components:{ c1, resBlock, singleDatePicker, LocaleSwitch },
+    components:{ c1, resBlock, singleDatePicker },
     data(){
       return{
         tDateArray: [
@@ -185,8 +184,6 @@
 
 <template>
   <h1>T1</h1>
-  <div>{{ $t('message.hello') }}</div>
-  <LocaleSwitch/>
   <el-button @click="addGenericRes">Add Generic Res</el-button>
   <el-button @click="tickCounter">tickCounter:{{ countA }}</el-button>
   <el-button @click="randomizeCounter">randomizeCounter: {{ countA }}</el-button>

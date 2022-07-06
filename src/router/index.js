@@ -4,6 +4,7 @@ import T1 from '/src/components/T1.vue'
 import singleDatePicker from '/src/components/singleDatePicker.vue'
 import resView1 from '/src/views/resView1.vue'
 import Login from '/src/views/Login.vue'
+import Logoff from '/src/views/Logoff.vue'
 
 const routes = [
     {
@@ -20,6 +21,11 @@ const routes = [
       path: '/Login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/Logoff',
+      name: 'Logoff',
+      component: Logoff
     },
     {
       path: '/ResView1',

@@ -1,22 +1,47 @@
 <template>
   <div>
-    <el-select v-model="$i18n.locale">
+    <el-select @change="handleLocaleChange" class="menuLangSelect" v-model="$i18n.locale">
       <el-option
         v-for="(lang, i) in langs"
         :key="`lang-${i}`"
-        :value="lang"
+        :value="lang.code"
       >
-        {{ lang }}
+        {{ lang.title }}
       </el-option>
     </el-select>
   </div>
 </template>
 
 <script>
+import { localeStore } from './../stores/locale.js'
 export default {
   name: 'LocaleSwitch',
   data() {
-    return { langs: ['en', 'es'] }
+    return { 
+      langs: [
+        {
+          code: 'en',
+          title: 'English'
+        },
+        {
+          code: 'es',
+          title: 'Español'
+        }
+      ]
+    }
+  },
+  methods: {
+    handleLocaleChange ( locale ) {
+      console.log(locale)
+      localeStore().setComponentLocale(locale)
+    }
   }
 }
 </script>
+
+<style>
+.menuLangSelect {
+  width: 60px;
+  margin-top: 10px;
+}
+</style>
