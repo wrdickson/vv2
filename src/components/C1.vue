@@ -1,6 +1,6 @@
 <template>
   <div @click="divClick" class="c1-wrapper">
-    <span>></span>
+    <font-awesome-icon icon="fa-circle-arrow-right" size="lg"/>
   </div>
 
 </template>
@@ -8,10 +8,16 @@
 <script>
 export default {
   name: "c1",
-    methods: {
-      divClick () {
-        console.log('divClick')
-      }
+  props:[ 'spaceId' ],
+  methods: {
+    divClick () {
+      console.log('divClick')
+  }
+  },
+  methods: {
+    divClick (e) {
+      console.log('divClick', this.spaceId)
+    }
   }
 }
 </script>

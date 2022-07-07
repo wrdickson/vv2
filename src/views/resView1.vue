@@ -7,7 +7,6 @@
       :tDateArray="tDateArray"
       :tableData="resTableData"
     />
-
   </div>
 </template>
 
@@ -41,8 +40,8 @@ export default {
         },
         {
           id: 2,
-          checkin: '2022-7-11',
-          checkout: '2022-7-14',
+          checkin: '2022-07-11',
+          checkout: '2022-07-14',
           space_code: "2",
           space_id: 2,
           name: 'aadmin',
@@ -61,7 +60,6 @@ export default {
           deposit: '$300',
           span: 2
         }
-
       ]
     }
   },
@@ -87,7 +85,7 @@ export default {
           //first, check if start date is before resViewStart, and change 
           //  start date(this is just for the table, not changing the res)
           //  or it won't show
-          if( dayjs(iRes.checkin).isBefore(dayjs(this.resViewStartDate)) ) {
+          if( dayjs(iRes.checkin).isBefore(dayjs(this.resViewStartDate)) &&  dayjs(iRes.checkout).isSameOrAfter(dayjs(this.resViewStartDate)) ) {
             //  isStartTruncated flag
             let iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'starttruncated'
             resSpace[iKey] = true
@@ -105,7 +103,12 @@ export default {
             resSpace[iKey] = iRes.customer
             //  span
             iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'span'
-            resSpace[iKey] = iRes.span
+            //  span is the difference between resStart and checkout
+            let iSpan = dayjs(iRes.checkout).diff(dayjs(this.resViewStartDate), 'd')
+            console.log('iRes.checkout', iRes.checkout)
+            console.log('rvsd', this.resViewStartDate)
+            console.log('diff', iSpan)
+            resSpace[iKey] = iSpan
           } else {
             //  resid
             let iKey = 'D' + dayjs(iRes.checkin).format('YYYYMMDD') + 'resid'
@@ -121,7 +124,9 @@ export default {
             resSpace[iKey] = iRes.customer
             //  span
             iKey = 'D' +  dayjs(iRes.checkin).format('YYYYMMDD') + 'span'
-            resSpace[iKey] = iRes.span
+            //  calculate span
+            let iSpan = dayjs(iRes.checkout).diff(dayjs(iRes.checkin), 'd')
+            resSpace[iKey] = iSpan
           }
         })
       })
@@ -160,10 +165,9 @@ export default {
   created () {
     //  load initial data
     api.engine.getSpaces().then( (response) => {
-      console.log('fucking response', response)
-      reservationStore().setResSpacesFromObj(response.data.spaces)
+      const sorted = _.sortBy(response.data.spaces, 'show_order')
+      reservationStore().setResSpacesFromObj(sorted)
     })
-
   }
 }
 </script>

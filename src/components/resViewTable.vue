@@ -8,10 +8,10 @@
     @cell-click="cellClick">
     <el-table-column fixed prop="description" label="Space" width="160">
     </el-table-column>
-    <el-table-column fixed width="50">
+    <el-table-column prop="expand" fixed width="20">
       <template #default="scope">
         <div data-rel-day="0" style="display: flex; align-items: center;">
-          <c1></c1>
+          <c1 :spaceId="scope.row.space_id"></c1>
         </div>
       </template>
     </el-table-column>
@@ -47,11 +47,11 @@ export default {
   components: { c1, resBlock },
   props: [
     'tDateArray',
-    'tableData'
+    'tableData',
+    'tableLoading'
   ],
   data () {
     return {
-
     }
   },
   computed: {
@@ -68,7 +68,11 @@ export default {
           spaceId: row.space_id,
           selectedDate: dayjs(column.property.substr(1)).format('YYYY-MM-DD')
         }
-        this.$emit( 'emptyCellClick', obj )
+        //  finally, don't emit from clicks on first two rows:
+        //  prop = "description", prop = "expand"
+        if( column.property != 'description' && column.property != 'expand') {
+          this.$emit( 'emptyCellClick', obj )
+        }
       }
     },
     resBlockClick( resId ) {
