@@ -25,7 +25,7 @@ library.add(faBars)
 const messages = {
   en: {
     message: {
-      datepickerPlaceholder: 'Pick a day',
+      datepickerPlaceholder: 'Choose a start date',
       hello: 'Hello!',
       homePage: 'Home',
       loggedInAs: 'Logged in as',
@@ -40,7 +40,7 @@ const messages = {
   },
   es: {
     message: {
-      datepickerPlaceholder: 'Elighe una fecha',
+      datepickerPlaceholder: 'Elige una fecha de inicio',
       hello: 'Buenos dias!',
       homePage: 'Página principal',
       loggedInAs: 'Iniciado sesión como',

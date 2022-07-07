@@ -133,12 +133,12 @@
           return o.title == "Room 3"
         })
         console.log(r)
-          r.D20220704name ='Smith'
-          r.D20220704resid = '3'
-          r.D20220704start = '2022-07-04',
-          r.D20220704end = '2022-07-06',
-          r.D20220704deposit = '$100.00',
-          r.D20220704span = 2
+        r.D20220704name ='Smith'
+        r.D20220704resid = '3'
+        r.D20220704start = '2022-07-04',
+        r.D20220704end = '2022-07-06',
+        r.D20220704deposit = '$100.00',
+        r.D20220704span = 2
       },
       cellClick (row, column, target) {
         const rowName = row.title

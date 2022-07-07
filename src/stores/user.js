@@ -23,7 +23,8 @@ export const userStore = defineStore({
         permission: '0',
         roles: []
       }
-      localStorage.setItem('account', JSON.stringify(this.account))
+      localStorage.setItem('account', null)
+      localStorage.setItem('jwt', null)
     },
     setJwt ( jwt ) {
       this.jwt = jwt

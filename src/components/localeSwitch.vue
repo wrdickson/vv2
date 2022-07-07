@@ -32,7 +32,6 @@ export default {
   },
   methods: {
     handleLocaleChange ( locale ) {
-      console.log(locale)
       localeStore().setComponentLocale(locale)
     }
   }
@@ -41,7 +40,7 @@ export default {
 
 <style>
 .menuLangSelect {
-  width: 60px;
-  margin-top: 10px;
+  width: 80px;
+  margin-top: 13px;
 }
 </style>
