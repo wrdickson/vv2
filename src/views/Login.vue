@@ -57,6 +57,7 @@ export default {
   methods: {
     loginCheck () {
       api.account.login(this.username1, this.password1).then((response) => {
+        console.log(response)
         //  clear the input variables
         this.loginResponse = ''
         this.username1 = ''

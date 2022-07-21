@@ -1,22 +1,31 @@
 <template>
   <div @click="divClick" class="c1-wrapper">
-    <font-awesome-icon icon="fa-circle-arrow-right" size="lg"/>
+    <div v-if="hasChildren">
+      <font-awesome-icon v-if="!showChildren" icon="fa-chevron-right" size="sm"/>
+      <font-awesome-icon v-if="showChildren" icon="fa-chevron-down" size="sm"/>
+    </div>
   </div>
 
 </template>
 
 <script>
+import { ElMessage } from 'element-plus'
 export default {
   name: "c1",
-  props:[ 'spaceId' ],
-  methods: {
-    divClick () {
-      console.log('divClick')
-  }
+  props:[ 'spaceId', 'showChildren', 'children'],
+  emits: [ 'c1-toggle-show-children' ],
+  computed: {
+    hasChildren () {
+      if( this.children.length > 0){
+        return true
+      } else { return false }
+    }
   },
   methods: {
     divClick (e) {
       console.log('divClick', this.spaceId)
+      this.$emit( 'c1-toggle-show-children', this.spaceId )
+      return false
     }
   }
 }

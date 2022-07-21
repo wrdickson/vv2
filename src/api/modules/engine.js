@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const engine = {
+
   addReservation: (user, reservation) => {
     const promise = axios({
       data: {
@@ -40,16 +41,15 @@ const engine = {
     })
     return promise
   },
-  checkAvailabilityByDates: (start, end, resId) => {
-    if (!resId) {
-      resId = null
-    }
+
+  checkAvailabilityByDates: (start, end) => {
     const promise = axios({
       method: 'get',
-      url: '/api-ezbook/checkAvailabilityByDates/' + start + '/' + end
+      url: '/api-ezbook/availability/' + start + '/' + end
     })
     return promise
   },
+
   checkinReservation: (user, resId) => {
     const promise = axios({
       data: {
@@ -83,6 +83,44 @@ const engine = {
     })
     return promise
   },
+  createReservation: ( newResObj, jwt ) => {
+    const promise = axios({
+      headers: {
+        jwt: jwt
+      },
+      data: {
+        newResObj: newResObj,
+      },
+      dataType: 'json',
+      method: 'post',
+      url: '/api-ezbook/reservations/'
+    })
+    return promise
+  },
+  createSpace: (user, jwt, spaceData) => {
+    const promise = axios({
+      headers: {
+        jwt: jwt  
+      },
+      data: {
+        user: user,
+        spaceData: spaceData
+      },
+      method: 'post',
+      url: '/api-ezbook/spaces/'
+    })
+    return promise
+  },
+  getAllCustomers ( jwt ) {
+    const request = axios({
+      headers: {
+        jwt: jwt  
+      },
+      method: 'post',
+      url: '/api-ezbook/allCustomers/'
+    })
+    return request
+  },
   getFolio: (user, folioId) => {
     const request = axios({
       data: {
@@ -107,12 +145,35 @@ const engine = {
     })
     return request
   },
-  getSpaces: () => {
-    return axios({
-      method: 'get',
-      url: '/api-ezbook/spaces/'
+
+  getReservationsByRange: ( startDate, endDate, jwt ) => {
+    console.log('s', startDate, 'e', endDate)
+    const request = axios({
+      headers: {
+        jwt: jwt
+      },
+      data: {
+        startDate: startDate,
+        endDate: endDate
+      },
+      dataType: 'json',
+      method: 'post',
+      url: '/api-ezbook/reservations-range/'
     })
+    return request
   },
+
+  getRootSpaces: ( jwt ) => {
+    const request = axios({
+      headers: {
+        jwt: jwt  
+      },
+      method: 'get',
+      url: '/api-ezbook/root-spaces/'
+    })
+    return request
+  }, 
+
   getSpaceData: () => {
     return axios.all([axios.get('/api/spaces/'), axios.get('api/types/')])
       .then(axios.spread(function (spaces, types) {

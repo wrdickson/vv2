@@ -9,6 +9,7 @@
 export default {
   props: [ 'resId', 'start', 'end', 'name', 'span', 'startTruncated' ],
   name: 'resBlock',
+  emits: [ 'resBlockClick' ],
   methods: {
     resClicked (resId) {
       this.$emit('resBlockClick', resId)

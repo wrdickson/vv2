@@ -1,5 +1,4 @@
 <template>
-  <div v-if="resSpaceCopy">
     <singleDatePicker @singleDatePicker:dateSelected="singleDateSelected"></singleDatePicker>
     <ResViewTable
       @resBlockClick="reservationSelected"
@@ -8,9 +7,8 @@
       :tDateArray="tDateArray"
       :tableData="resTableData"
       :trigger="trigger"
-      :resSpaceCopy="resSpaceCopy"
+      :resSpaceCopy="spaceRecords"
     />
-  </div>
 </template>
 
 <script>
@@ -21,9 +19,9 @@ import api from './../api/api.js'
 import { userStore } from './../stores/user.js'
 import dayjs from 'dayjs'
 import _ from 'lodash'
-import { invokeArrayFns } from '@vue/shared'
+import { reactive } from 'vue'
 export default {
-  name: 'resView1',
+  name: 'resView2',
   components: {
     singleDatePicker,
     ResViewTable
@@ -32,7 +30,7 @@ export default {
     return {
       reservations: [],
       trigger: 1,
-      resSpaceCopy: reservationStore().getRootSpaces
+      spaceRecords: _.cloneDeep(reservationStore().getRootSpaces)
     }
   },
   computed: {
@@ -49,78 +47,61 @@ export default {
       return reservationStore().resViewStart
     },
     resTableData () {
-      let resCopy = _.cloneDeep(this.reservations)
       //  iterate through the reservations and add data to the appropriate array item
-      _.forEach( this.resSpaceCopy, ( resSpace ) => {
-        //  filter reservations for a hit
-        let resForSpace = _.filter( resCopy, (o) => {
-          return o.space_id == resSpace.id
+      _.each(this.reservations, (iReservation) => {
+        console.log('make a record for ',iReservation)
+        let iRecord = _.find(this.spaceRecords, (o) => {
+          return o.id == iReservation.space_id
         })
-        //  iterate through resForSpace and add data from reservations
-        _.forEach(resForSpace, ( iRes ) => {
-          //  console.log('resForSpace', resForSpace)
-          //  console.log('resSpace', resSpace)
-          //  first, check if start date is before resViewStart, and change 
-          //  start date(this is just for the table, not changing the res)
-          //  or it won't show
-          if( dayjs(iRes.checkin).isBefore(dayjs(this.resViewStartDate)) &&  dayjs(iRes.checkout).isSameOrAfter(dayjs(this.resViewStartDate)) ) {
-            //  isStartTruncated flag
-            let iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'starttruncated'
-            resSpace[iKey] = true
-            //  resid
-            iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'resid'
-            resSpace[iKey] = iRes.id
-            //  start
-            iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'start'
-            resSpace[iKey] = iRes.checkin
-            //  end
-            iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'end'
-            resSpace[iKey] = iRes.checkout
-            //  customer
-            iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'customer'
-            resSpace[iKey] = iRes.customer_obj.lastName
-            //  span
-            iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'span'
-            //  span is the difference between resStart and checkout
-            let iSpan = dayjs(iRes.checkout).diff(dayjs(this.resViewStartDate), 'd')
-            resSpace[iKey] = iSpan
-          } else {
-            //  resid
-            let iKey = 'D' + dayjs(iRes.checkin).format('YYYYMMDD') + 'resid'
-            resSpace[iKey] = iRes.id
-            //  start
-            iKey = 'D' + dayjs(iRes.checkin).format('YYYYMMDD') + 'start'
-            resSpace[iKey] = iRes.checkin
-            //  end
-            iKey = 'D' + dayjs(iRes.checkin).format('YYYYMMDD') + 'end'
-            resSpace[iKey] = iRes.checkout
-            //  customer
-            iKey = 'D' +  dayjs(iRes.checkin).format('YYYYMMDD') + 'customer'
-            resSpace[iKey] = iRes.customer_obj.lastName
-            //  span
-            iKey = 'D' +  dayjs(iRes.checkin).format('YYYYMMDD') + 'span'
-            //  calculate span
-            let iSpan = dayjs(iRes.checkout).diff(dayjs(iRes.checkin), 'd')
-            resSpace[iKey] = iSpan
-          }
-        })
-
-
-
-
-        console.log('now go out with ', resSpace.title, ' id:', resSpace.id)
-        console.log('resSpace', resSpace)
-        console.log('resCopy@ start', resCopy)
-        //  parents
-        _.forEach(resSpace.parents, (parentId) => {
-          console.log('make a record for parentID:', parentId)
-          //  filter reservations for a hit
-          let resForSpace = _.filter( resCopy, (o) => {
-            return o.space_id == parentId
-          })
-          console.log('resForSpace:', resForSpace)
-        })
-
+        console.log('here is the record', iRecord)
+        //  first, check if start date is before resViewStart, and change 
+        //  start date(this is just for the table, not changing the res)
+        //  or it won't show
+        if( dayjs(iReservation.checkin).isBefore(dayjs(this.resViewStartDate)) &&  dayjs(iReservation.checkout).isSameOrAfter(dayjs(this.resViewStartDate)) ) {
+          //  isStartTruncated flag
+          let iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'starttruncated'
+          iRecord[iKey] = true
+          //  resid
+          iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'resid'
+          iRecord[iKey] = iReservation.id
+          //  start
+          iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'start'
+          iRecord[iKey] = iReservation.checkin
+          //  end
+          iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'end'
+          iRecord[iKey] = iReservation.checkout
+          //  customer
+          iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'customer'
+          iRecord[iKey] = iReservation.customer_obj.lastName
+          //  span
+          iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'span'
+          //  span is the difference between resStart and checkout
+          let iSpan = dayjs(iRes.checkout).diff(dayjs(this.resViewStartDate), 'd')
+          iRecord[iKey] = iSpan
+        } else {
+          //  resid
+          let iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'resid'
+          iRecord[iKey] = iReservation.id
+          //  start
+          iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'start'
+          iRecord[iKey] = iReservation.checkin
+          //  end
+          iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'end'
+          iRecord[iKey] = iReservation.checkout
+          //  customer
+          iKey = 'D' +  dayjs(iReservation.checkin).format('YYYYMMDD') + 'customer'
+          iRecord[iKey] = iReservation.customer_obj.lastName
+          //  span
+          iKey = 'D' +  dayjs(iReservation.checkin).format('YYYYMMDD') + 'span'
+          //  calculate span
+          let iSpan = dayjs(iReservation.checkout).diff(dayjs(iReservation.checkin), 'd')
+          iRecord[iKey] = iSpan
+        }
+        //now, duplicate for parents and children
+        if(iRecord.parents.length > 0){
+          console.log('we got some parents on this res', iReservation)
+          console.log('for these iRecords:', iRecord.parents)
+        }
 
 
 
@@ -128,7 +109,10 @@ export default {
 
       })
 
-      return this.resSpaceCopy
+
+      return this.spaceRecords
+
+
     },
     tDateArray () {
       //  this constructs the column elements for the table
@@ -169,7 +153,7 @@ export default {
     toggleShowChildren( spaceId ) {
 
       console.log('toggle @resview', spaceId)
-      let k = _.find(this.resSpaceCopy, (o) => {
+      let k = _.find(this.spaceRecords, (o) => {
         return o.id == spaceId
       })
 
@@ -177,7 +161,7 @@ export default {
         k.showChildren = false
         if(k.children) {
             _.each(k.children,( childId ) => {
-              let m = _.find(this.resSpaceCopy, (o) => {
+              let m = _.find(this.spaceRecords, (o) => {
                 return o.id == childId
               })
               if(m) {
@@ -191,7 +175,7 @@ export default {
         k.showChildren = true
         if(k.children) {
             _.each(k.children,( childId ) => {
-              let m = _.find(this.resSpaceCopy, (o) => {
+              let m = _.find(this.spaceRecords, (o) => {
                 return o.id == childId
               })
               if(m) {
@@ -208,7 +192,7 @@ export default {
           k.showChildren = false
           if(k.children) {
             _.each(k.children,( childId ) => {
-              let m = _.find(this.resSpaceCopy, (o) => {
+              let m = _.find(this.spaceRecords, (o) => {
                 return o.id == childId
               })
               if(m) {

@@ -5,6 +5,10 @@
     <el-menu-item index="T1">T1</el-menu-item>
     <el-menu-item index="singleDatePicker">singleDatePicker</el-menu-item>
     <el-menu-item index="ResView1">{{ $t('message.reservationView') }}</el-menu-item>
+    <el-menu-item index="ResView2">ResView2</el-menu-item>
+    <el-menu-item index="ResTest">ResTest</el-menu-item>
+    <el-menu-item index="SpaceEdit">SpaceEdit</el-menu-item>
+    <el-menu-item index="CRes">CRes</el-menu-item>
   </el-menu>
 </template>
 
@@ -13,9 +17,14 @@
     name: 'MainMenu',
     methods: {
       menuSelect (a,b,c,d) {
-        console.log('menuSelect()', a,b,c,d)
         this.$emit('mainMenu:select')
       }
     }
   }
 </script>
+
+<style>
+.el-menu-item {
+  height: 40px !important;
+}
+</style>

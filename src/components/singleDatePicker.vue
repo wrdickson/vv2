@@ -15,13 +15,14 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 import { localeStore } from './../stores/locale.js'
 export default {
   name: 'singelDatePicker',
   emits: ['singleDatePicker:dateSelected'],
   data () {
     return {
-      selectedDate: null,
+      selectedDate: dayjs().format('YYYY-MM-DD'),
       size: 'default'
     }
   },
@@ -32,6 +33,10 @@ export default {
     locale () {
       return localeStore().selectedLocale
     }
+  },
+  mounted () {
+    //  send a signal to parent that this is date selected
+    this.$emit('singleDatePicker:dateSelected', this.selectedDate)
   },
   watch: {
     selectedDate( newDate, oldDate ) {

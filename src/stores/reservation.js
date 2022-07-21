@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import dayjs from 'dayjs'
+import api from './../api/api.js'
 import _ from 'lodash'
 
 export const reservationStore = defineStore({
@@ -7,7 +8,13 @@ export const reservationStore = defineStore({
   state: () => ({
     resViewStart: dayjs().format('YYYY-MM-DD'),
     resSpaces: [],
+    showChildrenObj: {}
   }),
+  getters: {
+    getRootSpaces ( state ) {
+      return state.resSpaces
+    }
+  },
   actions: {
     setResSpacesFromObj ( resSpacesObj ) {
       let iArr = []

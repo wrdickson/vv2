@@ -41,6 +41,6 @@ export default {
 <style>
 .menuLangSelect {
   width: 80px;
-  margin-top: 13px;
+  margin-top: 0px;
 }
 </style>
