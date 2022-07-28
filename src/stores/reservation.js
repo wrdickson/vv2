@@ -7,8 +7,9 @@ export const reservationStore = defineStore({
   id: 'reservation',
   state: () => ({
     resViewStart: dayjs().format('YYYY-MM-DD'),
-    resSpaces: [],
-    showChildrenObj: {}
+    resSpaces: null,
+    showChildrenObj: {},
+    spaceTypes: []
   }),
   getters: {
     getRootSpaces ( state ) {
@@ -22,6 +23,9 @@ export const reservationStore = defineStore({
         iArr.push(resSpace)
       })
       this.resSpaces = iArr
-    }
+    },
+    setSpaceTypes ( spaceTypesArr ) {
+      this.spaceTypes = spaceTypesArr
+    } 
   }
 })

@@ -1,13 +1,14 @@
 <template>
   <div @click="resClicked(resId)" class="resBlock">
-    <span v-if="startTruncated"><b>&lt</b></span>
+    <span v-if="startTruncated"><b>&lt&lt</b></span>
     <span>{{ name }}</span>
+    <span style="float:right;" v-if="endTruncated"><b>&gt&gt</b></span>
   </div>
 </template>
 
 <script>
 export default {
-  props: [ 'resId', 'start', 'end', 'name', 'span', 'startTruncated' ],
+  props: [ 'resId', 'start', 'end', 'name', 'span', 'startTruncated', 'endTruncated' ],
   name: 'resBlock',
   emits: [ 'resBlockClick' ],
   methods: {

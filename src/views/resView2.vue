@@ -19,7 +19,6 @@ import api from './../api/api.js'
 import { userStore } from './../stores/user.js'
 import dayjs from 'dayjs'
 import _ from 'lodash'
-import { reactive } from 'vue'
 export default {
   name: 'resView2',
   components: {
@@ -28,7 +27,7 @@ export default {
   },
   data () {
     return {
-      reservations: [],
+      reservations: null,
       trigger: 1,
       spaceRecords: _.cloneDeep(reservationStore().getRootSpaces)
     }
@@ -49,17 +48,27 @@ export default {
     resTableData () {
       //  iterate through the reservations and add data to the appropriate array item
       _.each(this.reservations, (iReservation) => {
-        console.log('make a record for ',iReservation)
         let iRecord = _.find(this.spaceRecords, (o) => {
           return o.id == iReservation.space_id
         })
-        console.log('here is the record', iRecord)
+
+        /*
+        *  TODO
+        *  Handle a couple more cases:
+        *  1- check out is AFTER the end of the view
+        *  2- check in is BEFORE resview start AND check out is AFTER resView end
+        *  3- more edge cases???
+        */
+
         //  first, check if start date is before resViewStart, and change 
         //  start date(this is just for the table, not changing the res)
         //  or it won't show
-        if( dayjs(iReservation.checkin).isBefore(dayjs(this.resViewStartDate)) &&  dayjs(iReservation.checkout).isSameOrAfter(dayjs(this.resViewStartDate)) ) {
+        if( dayjs(iReservation.checkin).isBefore(dayjs(this.resViewStartDate)) && dayjs(iReservation.checkout).isSameOrAfter(dayjs(this.resViewStartDate)) ) {
+          //  is block indicator
+          let iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'blocked'
+          iRecord[iKey] = false
           //  isStartTruncated flag
-          let iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'starttruncated'
+          iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'starttruncated'
           iRecord[iKey] = true
           //  resid
           iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'resid'
@@ -76,11 +85,17 @@ export default {
           //  span
           iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'span'
           //  span is the difference between resStart and checkout
-          let iSpan = dayjs(iRes.checkout).diff(dayjs(this.resViewStartDate), 'd')
+          let iSpan = dayjs(iReservation.checkout).diff(dayjs(this.resViewStartDate), 'd')
           iRecord[iKey] = iSpan
         } else {
+          //  is block indicator
+          let iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'blocked'
+          iRecord[iKey] = false
+          //  isStartTruncated flag
+          iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'starttruncated'
+          iRecord[iKey] = false
           //  resid
-          let iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'resid'
+          iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'resid'
           iRecord[iKey] = iReservation.id
           //  start
           iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'start'
@@ -97,20 +112,12 @@ export default {
           let iSpan = dayjs(iReservation.checkout).diff(dayjs(iReservation.checkin), 'd')
           iRecord[iKey] = iSpan
         }
-
-
-
-        
-        //now, duplicate for parents and children
+        //now, create 'empty block' records for parents of reservations
         if(iRecord.parents.length > 0){
-          console.log('we got some parents on this res', iReservation)
-          console.log('for these iRecords:', iRecord.parents)
           _.forEach(iRecord.parents, (parentId) => {
             let qRecord = _.find(this.spaceRecords, (o) => {
               return o.id == parentId
             })
-            console.log('so, update this record ', qRecord)
-
             if( dayjs(iReservation.checkin).isBefore(dayjs(this.resViewStartDate)) &&  dayjs(iReservation.checkout).isSameOrAfter(dayjs(this.resViewStartDate)) ) {
               //  is block indicator
               let iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'blocked'
@@ -118,67 +125,85 @@ export default {
               //  isStartTruncated flag
               iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'starttruncated'
               qRecord[iKey] = true
-              //  resid
-              iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'resid'
-              qRecord[iKey] = iReservation.id
               //  start
               iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'start'
               qRecord[iKey] = iReservation.checkin
               //  end
               iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'end'
               qRecord[iKey] = iReservation.checkout
-              //  customer
-              iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'customer'
-              qRecord[iKey] = iReservation.customer_obj.lastName
               //  span
               iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'span'
               //  span is the difference between resStart and checkout
-              let iSpan = dayjs(iRes.checkout).diff(dayjs(this.resViewStartDate), 'd')
-              qiRecord[iKey] = iSpan
+              let iSpan = dayjs(iReservation.checkout).diff(dayjs(this.resViewStartDate), 'd')
+              qRecord[iKey] = iSpan
             } else {
               //  is block indicator
-              let iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'blocked'
+              let iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'blocked'
               qRecord[iKey] = true
-              //  resid
-              iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'resid'
-              qRecord[iKey] = iReservation.id
+              //  isStartTruncated flag
+              iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'starttruncated'
+              qRecord[iKey] = false
               //  start
               iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'start'
               qRecord[iKey] = iReservation.checkin
               //  end
               iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'end'
               qRecord[iKey] = iReservation.checkout
-              //  customer
-              iKey = 'D' +  dayjs(iReservation.checkin).format('YYYYMMDD') + 'customer'
-              qRecord[iKey] = iReservation.customer_obj.lastName
               //  span
               iKey = 'D' +  dayjs(iReservation.checkin).format('YYYYMMDD') + 'span'
               //  calculate span
               let iSpan = dayjs(iReservation.checkout).diff(dayjs(iReservation.checkin), 'd')
               qRecord[iKey] = iSpan
             }
-
-
-
-
-
-
-
-
-
           })
         }
-
-
-
-
-
+        //  now create 'empty block' records for children of reservatoins
+        if(iRecord.children.length > 0){
+          _.forEach(iRecord.children, (childId) => {
+            let qRecord = _.find(this.spaceRecords, (o) => {
+              return o.id == childId
+            })
+            if( dayjs(iReservation.checkin).isBefore(dayjs(this.resViewStartDate)) &&  dayjs(iReservation.checkout).isSameOrAfter(dayjs(this.resViewStartDate)) ) {
+              //  is block indicator
+              let iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'blocked'
+              qRecord[iKey] = true
+              //  isStartTruncated flag
+              iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'starttruncated'
+              qRecord[iKey] = true
+              //  start
+              iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'start'
+              qRecord[iKey] = iReservation.checkin
+              //  end
+              iKey = 'D' + dayjs(this.resViewStartDate).format('YYYYMMDD') + 'end'
+              qRecord[iKey] = iReservation.checkout
+              //  span
+              iKey = 'D' +  dayjs(this.resViewStartDate).format('YYYYMMDD') + 'span'
+              //  span is the difference between resStart and checkout
+              let iSpan = dayjs(iReservation.checkout).diff(dayjs(this.resViewStartDate), 'd')
+              qRecord[iKey] = iSpan
+            } else {
+              //  is block indicator
+              let iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'blocked'
+              qRecord[iKey] = true
+              //  isStartTruncated flag
+              iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'starttruncated'
+              qRecord[iKey] = false
+              //  start
+              iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'start'
+              qRecord[iKey] = iReservation.checkin
+              //  end
+              iKey = 'D' + dayjs(iReservation.checkin).format('YYYYMMDD') + 'end'
+              qRecord[iKey] = iReservation.checkout
+              //  span
+              iKey = 'D' +  dayjs(iReservation.checkin).format('YYYYMMDD') + 'span'
+              //  calculate span
+              let iSpan = dayjs(iReservation.checkout).diff(dayjs(iReservation.checkin), 'd')
+              qRecord[iKey] = iSpan
+            }
+          })
+        }
       })
-
-
       return this.spaceRecords
-
-
     },
     tDateArray () {
       //  this constructs the column elements for the table
@@ -200,12 +225,13 @@ export default {
     emptyCellClick ( obj ) {
       console.log('empty cell selected', obj)
     },
-    reservationSelected ( resId) {
+    reservationSelected ( resId ) {
       console.log('resId selected: ', resId)
     },
     rowClassName ( obj) {
     },
     singleDateSelected ( nDate ) {
+      console.log('singleDateSelected')
       //  get reservations from db
       api.engine.getReservationsByRange( this.resViewStartDate, this.resViewEndDate, this.jwt)
         .then( (response) => {

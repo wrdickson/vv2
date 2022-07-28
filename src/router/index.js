@@ -4,6 +4,7 @@ import T1 from '/src/components/T1.vue'
 import singleDatePicker from '/src/components/singleDatePicker.vue'
 import resView1 from '/src/views/resView1.vue'
 import resView2 from '/src/views/resView2.vue'
+import resView3 from '/src/views/resView3.vue'
 import Login from '/src/views/Login.vue'
 import Logoff from '/src/views/Logoff.vue'
 import ResTest from '/src/views/ResTest.vue'
@@ -49,6 +50,11 @@ const routes = [
       path: '/resView2',
       name: 'ResView2',
       component: resView2
+    },
+    {
+      path: '/resView3',
+      name: 'ResView3',
+      component: resView3
     },
     {
       path: '/SpaceEdit',

@@ -97,20 +97,32 @@ const engine = {
     })
     return promise
   },
-  createSpace: (user, jwt, spaceData) => {
+  createSpace: (spaceData, jwt) => {
     const promise = axios({
       headers: {
         jwt: jwt  
       },
       data: {
-        user: user,
-        spaceData: spaceData
+        newRootSpace: spaceData
       },
       method: 'post',
       url: '/api-ezbook/spaces/'
     })
     return promise
   },
+  deleteSpace: (spaceId, jwt) => {
+    const promise = axios({
+      headers: {
+        jwt: jwt  
+      },
+      data: {
+        spaceId: spaceId
+      },
+      method: 'delete',
+      url: '/api-ezbook/spaces/' + spaceId
+    })
+    return promise
+  }, 
   getAllCustomers ( jwt ) {
     const request = axios({
       headers: {
@@ -228,6 +240,20 @@ const engine = {
         reservation: reservation
       },
       method: 'put'
+    })
+    return request
+  },
+  updateSpace: ( space, jwt ) => {
+    const request = axios({
+      url: '/api-ezbook/root-spaces/' + space.id,
+      method: 'put',
+      headers: {
+        jwt: jwt
+      },
+      data: {
+        updateRootSpace: space
+      }
+
     })
     return request
   }

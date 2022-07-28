@@ -1,104 +1,113 @@
 <template>
-  <h1>SpaceEdit</h1>
-  <el-form
-    label-width="120px">
-    <el-form-item>
-      <el-select v-model= selectedSpace placeholder="Select">
-        <template v-for="space in rootSpaces">
-          <el-option :label="space.title" :value="space.id"></el-option>
-        </template>
-      </el-select>
-    </el-form-item>
-  </el-form>
-  <el-form
-    :model="form" 
-    label-width="120px">
-    <el-form-item label="Title">
-      <el-input v-model="form.title"></el-input>
-    </el-form-item>
-    <el-form-item label="Child Of">
-      <el-select v-model="form.childOf" placeholder="Select">
-        <template v-for="space in rootSpaces">
-          <el-option :label="space.title" :value="space.id" ></el-option>
-        </template>
-      </el-select>
-    </el-form-item>
-    <el-form-item label="Type">
-      <el-select v-model="form.spaceType">
-        <template v-for="spaceType in spaceTypes">
-          <el-option :label="spaceType.title" :value="spaceType.id"></el-option>
-        </template>
-      </el-select>
-    </el-form-item>
-    <el-form-item label="Sort order">
-      <el-input v-model="form.sortOrder"></el-input>
-    </el-form-item>
-    <el-form-item label="Show children">
-      <el-select v-model="form.showChildren" placeholder="Select">
-        <el-option label="True" value="1"/>
-        <el-option label="False" value="0"/>
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-button v-if="formDataComplete" @click="createSpace">Create</el-button>
-    </el-form-item>
-  </el-form>
+  <el-row>
+    <el-col :span="8">
+      <el-button @click="showCreateSpace = true" size="small">CreateSpace</el-button>
+      <rootSpaceTree
+        v-if="rootSpaces"
+        :rootSpaces="rootSpaces"
+        @node-selected="nodeSelected"
+      ></rootSpaceTree>
+    </el-col>
+    <el-col :span="16">
+      <editRootSpace
+        v-if="rootSpaces && spaceTypes && selectedSpace"
+        :rootSpaces="rootSpaces"
+        :spaceTypes="spaceTypes"
+        :selectedSpace="selectedSpace"
+        @update-space="updateSpace"
+        @emit-close="unselectSpace"
+        @delete-space="deleteSpace"
+      >
+      </editRootSpace>
+      <createRootSpace
+        v-if="rootSpaces && spaceTypes && showCreateSpace"
+        :rootSpaces="rootSpaces"
+        :spaceTypes="spaceTypes"
+        @emit-close="showCreateSpace = false"
+        @create-space="createSpace"
+      >
+      </createRootSpace>
+    </el-col>
+    <el-col :span="8">
+      <div>Column 3</div>
+    </el-col>
+  </el-row>
 
 
 </template>
 
 <script>
 import { userStore } from './../stores/user.js'
+import { reservationStore } from './../stores/reservation.js'
+import _ from 'lodash'
 import api from './../api/api.js'
+import RootSpaceTree from './../components/rootSpaceTree.vue'
+import editRootSpace from './../components/editRootSpace.vue'
+import createRootSpace from './../components/createRootSpace.vue'
 export default {
-  name: 'SpaceEdit',
-  data () {
-    return {
-      form: {
-        childOf: 0,
-        showChildren: null,
-        sortOrder: 0,
-        title: '',
-        spaceType: null
-      },
-      rootSpaces: {},
-      selectedSpace: null,
-      spaceTypes: {}
-    }
-  },
-  computed: {
-    formDataComplete () {
-      if(this.form.title.length > 0 && this.form.spaceType && this.form.showChildren){
-        return true
-      } else {
-        return false
-      }
+    name: 'SpaceEdit',
+    components: { editRootSpace, RootSpaceTree, createRootSpace },
+    data() {
+      return {
+        selectedSpace: null,
+        showCreateSpace: false
+      };
     },
-    jwt () {
-      return userStore().jwt
+    computed: {
+        jwt() {
+            return userStore().jwt;
+        },
+        rootSpaces () {
+          return _.cloneDeep(reservationStore().getRootSpaces)
+        },
+        spaceTypes () {
+          return reservationStore().spaceTypes
+        },
+        user() {
+            return userStore().account;
+        }
     },
-    user () {
-      return userStore().account
-    }
-  },
-  created () {
-    api.engine.getRootSpaces(this.jwt).then( (data) => {
-      console.log('rsdata', data)
-      this.rootSpaces = data.data.root_spaces
-      
-    })
-    api.engine.getSpaceTypes().then( (data) => {
-      console.log(data)
-      this.spaceTypes = data.data.space_types
-    })
-  },
-  methods: {
-    createSpace () {
-      console.log(this.form)
-      api.engine.createSpace( this.user, this.jwt, this.form).then( (data) => {
+    created() {
+    },
+    methods: {
+        createSpace( spaceObj ) {
+            console.log('cs', spaceObj);
+            api.engine.createSpace( spaceObj, this.jwt ).then( (response) => {
+              if(response.data.execute > 0){
+              const sorted = _.sortBy(response.data.rootSpacesWithChildrenAndParents, 'show_order')
+              reservationStore().setResSpacesFromObj(sorted) 
+              } else {
+                //error
+                alert('error')
+              }
+            })
+        },
+        deleteSpace ( space ) {
+          console.log('d:', space )
+          api.engine.deleteSpace ( space.id, this.jwt ).then( (response) => {
+            if(response.data.execute == true){
+            const sorted = _.sortBy(response.data.rootSpacesWithChildrenAndParents, 'show_order')
+            reservationStore().setResSpacesFromObj(sorted) 
+            } else {
+              //error
+            }
+          })
+        },
+        nodeSelected ( rootSpace ) {
+          this.selectedSpace = rootSpace
+        },
+        unselectSpace () {
+          this.selectedSpace = null
+        },
+        updateSpace ( uSpace ) {
+          console.log('uSpace on parent', uSpace)
+          api.engine.updateSpace( uSpace, userStore().jwt ).then( (response) => {
+            console.log(response.data)
+            const sorted = _.sortBy(response.data.rootSpacesWithChildrenAndParents, 'show_order')
+            reservationStore().setResSpacesFromObj(sorted)
+          })
 
-      })
+        }
     }
-  }
 }
 </script>

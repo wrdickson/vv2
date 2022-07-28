@@ -2,15 +2,15 @@
   <div v-if="authCompleted && dataLoaded">
     <el-drawer
       v-model="drawerVisible"
-      size="200px"
+      size="180px"
       direction="ltr"
       :with-header="false"
       :show-close="false"
       >
-        <MainMenu @mainMenu:select="hideDrawer"/>
+        <MainMenu @mainMenu-select="hideDrawer"/>
     </el-drawer>
     <el-container>
-      <el-aside width="200px" class="hidden-sm-and-down navAside">
+      <el-aside width="180px" class="hidden-sm-and-down navAside">
         <MainMenu/>
       </el-aside>
       <el-container>
@@ -113,8 +113,18 @@ export default {
     api.engine.getRootSpaces().then( (response) => {
       const sorted = _.sortBy(response.data.rootSpacesWithChildrenAndParents, 'show_order')
       reservationStore().setResSpacesFromObj(sorted)
-      this.dataLoaded = true
-    })
+      
+    }).then( 
+      api.engine.getSpaceTypes().then( (response) => {
+        console.log('spaceTypes @ App view load:', response.data)
+        reservationStore().setSpaceTypes(response.data.space_types)
+      })
+    ).then(
+      api.engine.getSelectGroups().then( (response) => {
+        console.log('selectGroups @ App view load:', response.data)
+        this.dataLoaded = true
+      })
+    )
   }
 }
 </script>

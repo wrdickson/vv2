@@ -6,7 +6,9 @@
     border
     height="450"
     style="width: 100%"
-    @cell-click="cellClick">
+    @cell-click="cellClick"
+    @empty-block-click="emptyBlockClick">
+
     <el-table-column fixed prop="title" :label="spaceLabel" width="160">
     </el-table-column>
     <!--
@@ -43,7 +45,18 @@
             :start="scope.row[day.dayString + 'start']"
             :end="scope.row[day.dayString + 'end']"
             :name="scope.row[day.dayString + 'customer']"
+            :span="scope.row[day.dayString + 'span']"
             :startTruncated="scope.row[day.dayString + 'starttruncated']"
+            :endTruncated="scope.row[day.dayString + 'endtruncated']"
+          />
+          <emptyBlock
+            @emptyBlockClick="emptyBlockClick"
+            v-if="scope.row[day.dayString + 'blocked']"
+            :start="scope.row[day.dayString + 'start']"
+            :end="scope.row[day.dayString + 'end']"
+            :span="scope.row[day.dayString + 'span']"
+            :startTruncated="scope.row[day.dayString + 'starttruncated']"
+            :endTruncated="scope.row[day.dayString + 'endtruncated']"
           />
         </div>
       </template>
@@ -55,13 +68,14 @@
 
 <script>
 import resBlock from './resBlock.vue'
+import emptyBlock from './emptyBlock.vue'
 import c1 from './C1.vue'
 import dayjs from 'dayjs'
 import _ from 'lodash'
 export default {
   name: 'ResViewTable',
-  components: { c1, resBlock },
-  emits: [ 'resview-toggle-show-children', 'resBlockClick', 'emptyCellClick' ],
+  components: { c1, resBlock, emptyBlock },
+  emits: [ 'resview-toggle-show-children', 'resBlockClick', 'emptyBlockClick', 'emptyCellClick' ],
   props: [
     'tDateArray',
     'tableData',
@@ -89,6 +103,7 @@ export default {
       let colProp = column.property
       //  if there's no res data from that column, emit the click
       let resIdKey = colProp + 'resid'
+      let blockedKey = colProp + 'blocked'
       if (! row[resIdKey] ){
         let obj = {
           spaceId: row.id,
@@ -100,6 +115,9 @@ export default {
           this.$emit( 'emptyCellClick', obj )
         }
       }
+    },
+    emptyBlockClick ( row, column ) {
+      console.log('emptyBlockClick on resViewTable', row, column)
     },
     getChildrenIds( spaceId ) {
       const childrenArr = []
