@@ -118,10 +118,6 @@ export default {
       api.engine.getSpaceTypes().then( (response) => {
         console.log('spaceTypes @ App view load:', response.data)
         reservationStore().setSpaceTypes(response.data.space_types)
-      })
-    ).then(
-      api.engine.getSelectGroups().then( (response) => {
-        console.log('selectGroups @ App view load:', response.data)
         this.dataLoaded = true
       })
     )

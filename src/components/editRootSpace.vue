@@ -17,6 +17,7 @@
         </el-form-item>
         <el-form-item :label="i18ChildOf">
           <el-select v-model="selectedSpace.childOf" placeholder="Select">
+            <el-option label="0" value="0"></el-option>
             <template v-for="space in rootSpaces">
               <el-option :label="space.title" :value="space.id" ></el-option>
             </template>
@@ -53,7 +54,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button  @click="updateSpace">{{$t('message.update')}}</el-button>
+          <el-button type="primary" @click="updateSpace">{{$t('message.update')}}</el-button>
         </el-form-item>
       </el-form>
       <el-divider/>

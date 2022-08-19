@@ -4,7 +4,7 @@
     <el-config-provider :locale="locale">
       <el-select v-model="selectedPeopleQty" :placeholder="placeholder">
         <template v-for="item in arr">
-          <el-option :lable="item" :value="item"/>
+          <el-option :label="item" :value="item"/>
         </template>
       </el-select>
     </el-config-provider>

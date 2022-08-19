@@ -25,6 +25,7 @@ export const userStore = defineStore({
       }
       localStorage.setItem('account', null)
       localStorage.setItem('jwt', null)
+      this.jwt = null
     },
     setJwt ( jwt ) {
       this.jwt = jwt

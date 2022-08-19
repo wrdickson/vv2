@@ -1,8 +1,8 @@
 <template>
   <div @click="divClick" class="c1-wrapper">
     <div v-if="hasChildren">
-      <font-awesome-icon v-if="!showChildren" icon="fa-chevron-right" size="sm"/>
-      <font-awesome-icon v-if="showChildren" icon="fa-chevron-down" size="sm"/>
+      <font-awesome-icon v-if="showChildren == false" icon="fa-chevron-right" size="sm"/>
+      <font-awesome-icon v-if="showChildren == true" icon="fa-chevron-down" size="sm"/>
     </div>
   </div>
 

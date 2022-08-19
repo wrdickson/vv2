@@ -1,12 +1,12 @@
 <template>
   <div @click="emptyBlockClick" class="emptyBlock">
-    <span>blocked</span>
+    <span>blocked{{resIdRef}}</span>
   </div>
 </template>
 
 <script>
 export default {
-  props: [ 'start', 'end', 'span', 'startTruncated', 'blockIndicator' ],
+  props: [ 'resIdRef', 'start', 'end', 'span', 'startTruncated', 'blockIndicator' ],
   name: 'emptyBlock',
   emits: [ 'empty-block-click' ],
   methods: {
@@ -18,15 +18,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .emptyBlock {
-    background-color: rgb(214, 214, 214);
-    color: rgb(214, 214, 214);
+    background-color: rgb(252, 231, 231);
+    color: rgb(252, 231, 231);
     width: 100%;
     padding-right: 4px;
     padding-left: 4px;
-    margin-right: 2px;
-    margin-left: 2px;
-    border-radius: 4px;
+    margin-right: 0px;
+    margin-left: 0px;
+    border-radius: 0px;
   }
 </style>

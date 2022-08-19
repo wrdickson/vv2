@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div>{{ $t('message.arrival') }} {{ $t('message.and') }} {{ $t('message.departure') }}</div>
     <el-config-provider :locale="locale">
       <el-date-picker
         v-model="dRange"
         type="daterange"
+        size="small"
         :clearable=false
         :range-separator="rSeperator"
         :start-placeholder="startPlaceholder"

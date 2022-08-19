@@ -2,7 +2,7 @@
   <el-card>
     <template #header>
       <div class="card-header">
-        <span>{{$t('message.editSpace')}}</span>
+        <span>{{$t('message.createSpace')}}</span>
         <el-button class="button" size="small" @click="emitClose">{{$t('message.close')}}</el-button>
       </div>
     </template>
@@ -57,7 +57,6 @@
           <el-button  @click="createSpace">{{$t('message.createSpace')}}</el-button>
         </el-form-item>
       </el-form>
-      <el-divider/>
   </el-card>
 </template>
 

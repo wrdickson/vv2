@@ -1,14 +1,25 @@
 <template>
   <el-row>
     <el-col :span="12">
-      <h1>CRes</h1>
-      <DateRangePicker
-        @dateRangePicker:rangeSelected="dRangeSelected"
-      />
-      <allSpacePicker
-        @allSpacePicker:spaceSelected="spaceSelected"
-        :availableSpaceIds="availableSpaceIds"
-      />
+      <el-form
+        label-position="top"
+        size="small"
+      >
+        <el-form-item :label=" i18nArrival + ' ' + i18nAnd + ' ' + i18nDeparture">
+          <DateRangePicker
+            @dateRangePicker:rangeSelected="dRangeSelected"
+          />
+        </el-form-item>
+        <el-form-item size="small" :label="i18nSpaces">
+          <allSpacePicker
+            @allSpacePicker:spaceSelected="spaceSelected"
+            :availableSpaceIds="availableSpaceIds"
+          />
+        </el-form-item>
+
+      </el-form>
+      <el-divider/>
+
       <allCustomerPicker
         @allCustomerPicker:customerSelected="customerSelected"
       />
@@ -27,8 +38,12 @@
       </el-button>
     </el-col>
     <el-col :span="12">
-
-
+      <searchCustomers/>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="12">
+      <createCustomer/>
     </el-col>
   </el-row>
 </template>
@@ -38,8 +53,10 @@ import { ElMessage } from 'element-plus'
 import DateRangePicker from './../components/dateRangePicker.vue'
 import allSpacePicker from './../components/allSpacePicker.vue'
 import allCustomerPicker from './../components/allCustomerPicker.vue'
+import createCustomer from './../components/createCustomer.vue'
 import resPeoplePicker from './../components/resPeoplePicker.vue'
 import resBedsPicker from './../components/resBedsPicker.vue'
+import searchCustomers from './../components/searchCustomers.vue'
 import api from './../api/api.js'
 import { userStore } from './../stores/user.js'
 
@@ -51,8 +68,11 @@ export default {
     DateRangePicker,
     allSpacePicker,
     allCustomerPicker,
+    createCustomer,
     resPeoplePicker,
-    resBedsPicker
+    resBedsPicker,
+
+    searchCustomers
   },
   data () {
     return {
@@ -87,6 +107,10 @@ export default {
         return null
       }
     },
+    i18nAnd () { return this.$i18n.t('message.and') },
+    i18nArrival () { return this.$i18n.t('message.arrival') },
+    i18nDeparture () { return this.$i18n.t('message.departure') },
+    i18nSpaces () { return this.$i18n.t('message.spaceLabel') },
     jwt () {
       return userStore().jwt
     }
@@ -140,7 +164,7 @@ export default {
       this.startDate = range[0]
       this.endDate = range[1]
       api.engine.checkAvailabilityByDates(this.fStartDate, this.fEndDate).then( (response) => {
-        console.log(response.data.availability.availableSpaceIds)
+        console.log(response.data)
         this.availableSpaceIds = response.data.availability.availableSpaceIds
       })
     },

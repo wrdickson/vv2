@@ -1,7 +1,16 @@
 import axios from 'axios'
 
 const engine = {
-
+  aaa: ( jwt ) => {
+    const promise = axios({
+      headers: {
+        jwt: jwt
+      },
+      method: 'post',
+      url: '/api-ezbook/aaa/'
+    })
+    return promise
+  },
   addReservation: (user, reservation) => {
     const promise = axios({
       data: {
@@ -72,11 +81,26 @@ const engine = {
     })
     return promise
   },
-  createCustomer: (user, customer) => {
+  createAccount: ( obj, jwt ) => {
     const promise = axios({
+      headers: {
+        jwt: jwt
+      },
       data: {
-        user: user,
-        customer: customer
+        newAccountObj: obj
+      },
+      method: 'post',
+      url: '/api-ezbook/account/'
+    })
+    return promise
+  },
+  createCustomer: (customerObj, jwt) => {
+    const promise = axios({
+      headers: {
+        jwt: jwt
+      },
+      data: {
+        customerObject: customerObj
       },
       method: 'post',
       url: '/api-ezbook/customers/'
@@ -122,7 +146,18 @@ const engine = {
       url: '/api-ezbook/spaces/' + spaceId
     })
     return promise
-  }, 
+  },
+  
+  getAllAccounts ( jwt ) {
+    const request = axios({
+      headers: {
+        jwt: jwt
+      },
+      method: 'post',
+      url: 'api-ezbook/accounts/'
+    })
+    return request
+  },
   getAllCustomers ( jwt ) {
     const request = axios({
       headers: {
@@ -213,14 +248,43 @@ const engine = {
       url: '/api-ezbook/tax-types/'
     })
   },
-  searchCustomers: (lastName, firstName) => {
+  searchCustomers: (lastName, firstName, jwt) => {
     const request = axios({
+      headers: {
+        jwt: jwt
+      },
       method: 'post',
       data: {
         lastName: lastName,
         firstName: firstName
       },
-      url: '/api-ezbook/customerSearch/'
+      url: '/api-ezbook/search-customers/'
+    })
+    return request
+  },
+  updateAccountInfo: (accountObj, jwt) => {
+    const request = axios({
+      headers: {
+        jwt: jwt
+      },
+      method: 'put',
+      data: {
+        accountObj: accountObj
+      },
+      url: '/api-ezbook/accounts/' + accountObj.id
+    })
+    return request
+  },
+  updateAccountPassword: ( accountId, newPassword, jwt ) => {
+    const request = axios({
+      headers: {
+        jwt: jwt
+      },
+      data: {
+        newP: newPassword
+      },
+      method: 'put',
+      url: '/api-ezbook/account-pwd/' + accountId
     })
     return request
   },

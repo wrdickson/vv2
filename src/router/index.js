@@ -1,15 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '/src/components/Home.vue'
-import T1 from '/src/components/T1.vue'
-import singleDatePicker from '/src/components/singleDatePicker.vue'
-import resView1 from '/src/views/resView1.vue'
-import resView2 from '/src/views/resView2.vue'
 import resView3 from '/src/views/resView3.vue'
 import Login from '/src/views/Login.vue'
 import Logoff from '/src/views/Logoff.vue'
-import ResTest from '/src/views/ResTest.vue'
 import SpaceEdit from '/src/views/SpaceEdit.vue'
 import CRes from '/src/views/CRes.vue'
+import UserAdmin from '/src/views/UserAdmin.vue'
 const routes = [
     {
       path: '/',
@@ -20,11 +16,6 @@ const routes = [
       path: '/CRes',
       name: 'CRes',
       component: CRes
-    },
-    {
-      path: '/ResTest',
-      name: 'ResTest',
-      component: ResTest
     },
     {
       path: '/Home',
@@ -42,16 +33,6 @@ const routes = [
       component: Logoff
     },
     {
-      path: '/ResView1',
-      name: 'ResView1',
-      component: resView1
-    },
-    {
-      path: '/resView2',
-      name: 'ResView2',
-      component: resView2
-    },
-    {
       path: '/resView3',
       name: 'ResView3',
       component: resView3
@@ -62,19 +43,14 @@ const routes = [
       component: SpaceEdit
     },
     {
-      path: '/T1',
-      name: 'T1',
-      component: T1
-    },
-    {
-      path: '/singleDatePicker',
-      name: 'singleDatePicker',
-      component: singleDatePicker
+      path: '/UserAdmin',
+      name: 'UserAdmin',
+      component: UserAdmin
     }
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
 })
 

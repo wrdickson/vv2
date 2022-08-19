@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div>{{ $t('message.spaceLabel')}}</div>
     <el-config-provider :locale="locale">
       <el-select
         v-if="rootSpaces" v-model="selectedRootSpace" :placeholder="placeholder"

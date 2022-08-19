@@ -1,7 +1,8 @@
 <template>
   <el-row>
     <el-col :span="8">
-      <el-button @click="showCreateSpace = true" size="small">CreateSpace</el-button>
+      <el-button @click="showCreateSpace = true" type="primary" size="small">{{$t('message.createSpace')}}</el-button>
+      <el-divider/>
       <rootSpaceTree
         v-if="rootSpaces"
         :rootSpaces="rootSpaces"

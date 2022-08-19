@@ -1,15 +1,13 @@
 <template>
   <el-table
     :data="tableData"
-    :spanMethod="spanMethod"
     :row-style="rowStyle"
-    border
     height="450"
     style="width: 100%"
     @cell-click="cellClick"
     @empty-block-click="emptyBlockClick">
 
-    <el-table-column fixed prop="title" :label="spaceLabel" width="160">
+    <el-table-column fixed prop="title" :label="spaceLabel" width="140">
     </el-table-column>
     <!--
     <el-table-column fixed prop="id" label="id" width="45">
@@ -48,10 +46,12 @@
             :span="scope.row[day.dayString + 'span']"
             :startTruncated="scope.row[day.dayString + 'starttruncated']"
             :endTruncated="scope.row[day.dayString + 'endtruncated']"
+            :isFirst = "scope.row[day.dayString + 'isfirst']"
           />
           <emptyBlock
             @emptyBlockClick="emptyBlockClick"
             v-if="scope.row[day.dayString + 'blocked']"
+            :resIdRef="scope.row[day.dayString + 'resIdRef']"
             :start="scope.row[day.dayString + 'start']"
             :end="scope.row[day.dayString + 'end']"
             :span="scope.row[day.dayString + 'span']"
@@ -154,20 +154,6 @@ export default {
           return 'display: none;'
         }
       }
-    }, 
-    spanMethod ( d ) {
-      const colName = d.column.property // the formatted 'name' ie 'D20220701'
-      const rowTitle = d.row.title
-      const r = _.find( this.tableData, function (o) { return o.title == rowTitle })
-      let useColSpan = 1
-      if(r[colName + 'span']){
-        useColSpan = r[colName + 'span']
-      }
-      const obj = {
-        rowspan: 1,
-        colspan: useColSpan
-      }
-      return obj
     }
   },
   watch: {
@@ -178,3 +164,15 @@ export default {
 }
 
 </script>
+
+<style>
+.cell {
+  padding: 0px !important;
+}
+.el-table .el-table__cell{
+  padding: 0px !important;
+}
+.el-scrollbar__bar.is-horizontal{
+  height:23px !important;
+}
+</style>

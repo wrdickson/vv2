@@ -12,6 +12,19 @@ const account = {
     })
     return request
   },
+  createAccount: ( obj, jwt ) => {
+    const request = axios({
+      method: 'post',
+      headers: {
+        jwt: jwt
+      },
+      data: {
+        newAccountObj: obj
+      },
+      url: '/api-ezbook/accounts/'
+    })
+    return request
+  },
   testToken: (jwt) => {
     const request = axios({
       method: 'post',
